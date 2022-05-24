@@ -1,0 +1,360 @@
+.App {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  
+  
+}
+
+html {
+  font-size: larger;
+}
+#title {
+  font-size: 1.5em;
+  color:black;
+  font-family: 'Roboto', sans-serif;
+  width: 100ch;
+  display: flex;
+  justify-content: center;
+
+}
+
+#tiles-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+}
+
+.App-header {
+  animation: 2.5s ease-in-out 0s 1 tiles-init;
+  display: flex;
+  justify-content: center;
+  padding: 0%;
+  margin: 0%;
+  height: 20rem;
+  width: 20rem;
+  display: flex;
+  overflow:visible;
+  flex-direction: row;
+  flex-wrap: wrap;
+  color: rgb(0, 0, 0);
+  
+}
+
+@keyframes tiles-init {
+  0% {
+    transform: rotate(740deg) scale(0.01)
+    
+  }
+  100% {
+    transform: rotate(0deg) scale(1)
+    
+  }
+}
+
+@keyframes tiles-hover {
+  0% {
+    transform: scale(1, 1);
+    
+  }
+  50% {
+    transform: scale(1.1, 1.1);
+    
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes play-button-init {
+  0% {
+    opacity: 0;
+    transform: translateY(150%);
+    
+  }
+  25% {
+    opacity: 0;
+    transform: translateY(150%);
+    
+  }
+  40% {
+    opacity: 1;
+    
+    
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+    
+    
+  }
+}
+
+@keyframes server-init {
+  0% {
+    transform: scale(0.01);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+#menu {
+  animation: 1s ease-in-out 0s 1 server-init;
+  flex-direction: column;
+  position: absolute;
+  width: 20rem;
+  height: 20rem;
+  background-color: lightsteelblue;
+  border: 10px solid black;
+  display: flex;
+  overflow-y: scroll
+  
+
+}
+
+#delete-server {
+  display: flex;
+  background-color: orangered;
+  padding: 0.2rem;
+  align-self: center;
+  box-shadow: 0rem 0.1rem 0.1rem 0rem black;
+}
+#delete-server:active {
+  display: flex;
+  background-color: orangered;
+  padding: 0.2rem;
+  align-self: center;
+  box-shadow: none;
+ 
+}
+
+#create-server {
+  display: flex;
+  background-color: greenyellow;
+  padding: 0.2rem;
+  align-self: center;
+  box-shadow: 0rem 0.1rem 0.1rem 0rem black;
+}
+#create-server:active {
+  display: flex;
+  background-color: greenyellow;
+  padding: 0.2rem;
+  align-self: center;
+  box-shadow: none;
+ 
+}
+
+
+#create-lobby-div {
+  
+  display: flexbox;
+  flex-direction: column;
+  flex-wrap: wrap;
+  font-size: medium;
+  background-color: greenyellow;
+  padding: 0.2rem;
+  margin: 0.2rem;
+  position: fixed;
+  margin-left: 22rem;
+  margin-top: 2rem;
+  width: 12em;
+  height: 14rem;
+  box-shadow: 0rem 0.1rem 0.1rem 0rem black;
+  border: 10px solid black;
+  
+}
+
+input[type=text] {
+  border: 0.1rem solid black;
+  background-color: yellowgreen;
+  color: black;
+  text-emphasis-color: black;
+  text-decoration-color: black;
+  font-display: auto; 
+}
+
+button {
+  margin-top: 1rem;
+  border: 0.2rem solid black;
+  background-color: darkseagreen;
+}
+.lobbyLabel {
+  display: flex
+}
+
+#menu_title {
+  display: flex;
+  height: 1.4rem;
+  justify-content: center;
+  padding-top: 0.01rem;
+  margin: 0.2rem;
+  padding-bottom: 0.5rem;
+  color: black;
+  border-bottom: 3px solid black;
+
+}
+
+.server {
+  animation: 1s ease-in-out 0s 1 server-init;
+  background-color: aliceblue;
+  padding-top: 0rem;
+  margin: 0.2rem;
+  margin-top: 0.9rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  padding-bottom: 0.5rem;
+  color: black;
+  border: 3px solid black;
+  min-height: 3rem;
+  white-space: nowrap;
+}
+p {
+ 
+  margin: 0rem;
+}
+
+#small-text {
+  font-size: xx-small;
+  color: darkgreen;
+  padding-top: 0.4rem;
+  padding-left: 0.4rem;
+  display: inline-flex;
+  
+}
+#server-desc {
+  
+  font-size: small;
+  color: rgb(0, 0, 0);
+  padding-top: 0.4rem;
+  padding-left: 0.4rem;
+  
+}
+#server-button {
+  user-select: none;
+  padding: 0.2rem;
+  margin: 0.3rem;
+  background-color: greenyellow;
+  border-radius: 0.1rem;
+  box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem rgba(0, 0, 0, 0.75);
+}
+#server-button:hover  {
+  padding: 0.2rem;
+  margin: 0.3rem;
+  background-color: green;
+  border-radius: 0.1rem;
+  margin: 0.3rem;
+  margin-left: 0.35rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0.15rem;
+  box-shadow: 0.07rem 0.07rem 0.07rem 0.07rem rgba(0, 0, 0, 0.65);
+}
+
+#server-button:active  {
+  padding: 0.2rem;
+  margin: 0.3rem;
+  background-color: green;
+  border-radius: 0.1rem;
+  margin: 0.3rem;
+  margin-left: 0.4rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.2rem;
+  box-shadow: none;
+}
+
+#attack-hornets-button {
+  padding: 0.2rem;
+  margin: 0.3rem;
+  background-color: orangered;
+  border-radius: 0.1rem;
+  box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem rgba(0, 0, 0, 0.75);
+  user-select: none;
+}
+#attack-hornets-button:hover  {
+  padding: 0.2rem;
+  margin: 0.3rem;
+  background-color: red;
+  border-radius: 0.1rem;
+  margin: 0.3rem;
+  margin-left: 0.35rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0.15rem;
+  box-shadow: 0.07rem 0.07rem 0.07rem 0.07rem rgba(0, 0, 0, 0.65);
+}
+#attack-hornets-button:active  {
+  padding: 0.2rem;
+  margin: 0.3rem;
+  background-color: red;
+  border-radius: 0.1rem;
+  margin: 0.3rem;
+  margin-left: 0.4rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.2rem;
+  box-shadow: none;
+}
+#server-name {
+  display: inline;
+
+}
+#play-div {
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  
+}
+#player-name {
+  display: flex;
+  width: 10rem;
+  padding: 0.2rem;
+  margin: 0.2rem;
+  justify-self: center;
+  margin-left: 4rem;
+  background-color: lightsteelblue;
+}
+#play-button {
+  animation: 3s ease-in-out 0s 1 play-button-init;
+  animation-fill-mode: forwards;
+  display: flex;
+  opacity: 0;
+  justify-content: center;
+  align-items: center;
+  background-color: greenyellow;
+  border: 4px solid black;
+  border-radius: 20%;
+  width: 10rem;
+  height: 4rem;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-style: bold;
+  font-size: larger;
+  box-shadow: 0.2rem 0.2rem 0.2rem 0.2rem gray;
+}
+
+#play-button:active {
+ 
+  background-color: rgb(24, 122, 24);
+  opacity: 1;
+  border: 4px solid black;
+  border-radius: 20%;
+  width: 10rem;
+  height: 4rem;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-style: bold;
+  font-size: larger;
+  
+}
+
+
+.tile {
+  border: 2px solid black;
+  border-radius: 3px;
+  margin: 2px;
+  height: 3rem;
+  width: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+}
+
