@@ -4,6 +4,11 @@ import Tile from './Tile';
 import Menu from './Menu';
 import {useState} from 'react';
 import {nanoid} from 'nanoid';
+const io = require("socket.io-client");
+const socket = io("http://localhost:5000", {
+  withCredentials: true,
+});
+
 
 // let tk Create a 5x6 2d array of Tile components
 let tk = [];
@@ -36,7 +41,7 @@ function App(props) {
       <h2>BATTLESHIPPLE</h2>
       </div>
       <div id="tiles-header">
-      <Menu id="menu" setTiles={setTheTiles} startGame={startGame} visible={menuVisible}/>
+      <Menu id="menu" setTiles={setTheTiles} startGame={startGame} socket={socket} visible={menuVisible}/>
       <header className="App-header">
         
         

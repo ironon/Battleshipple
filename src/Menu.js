@@ -3,25 +3,22 @@
 import CreateLobby from "./CreateLobby"
 import Server from "./Server"
 //import useState
-import { useState } from "react"
+import React, { useState } from "react"
 import { nanoid } from "nanoid"
-let num = 0
-let myServers = []
-function davidlog(data) {
-    console.log(data)
-    num = num + 1
-    console.log(num)
-}
+
+
 function generateServerId() {
     let id = nanoid()
-    myServers.push(id)
+
     return id
 }
 function Menu(props) {
     const [lobbyVis, setLobbyVis] = useState(false)
     let [serverClicked, setServerClicked] = useState(false)
     let [playerName, setPlayerName] = useState("youCantSetYourNameAsThis>:)")
-    let [canRequest, setCanRequest] = useState(true)
+    let [opponent, setOpponent] = useState("")
+    let [host, setHost] = useState("")
+
     
     let visible = props.visible
    
@@ -30,27 +27,27 @@ function Menu(props) {
     
     function getLobbiesFromServer() {
         
-        //get lobbies from server
-        //set lobbies to state
-        if (canRequest == true) {
-            let info = fetch("http://localhost:5000", {
-            method: 'POST',
-            mode: 'cors', // this cannot be 'no-cors'
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({"request": "getServers"})
+        // //get lobbies from server
+        // //set lobbies to state
+        // if (canRequest == true) {
+        //     let info = fetch("http://localhost:5000", {
+        //     method: 'POST',
+        //     mode: 'cors', // this cannot be 'no-cors'
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({"request": "getServers"})
 
-        })
-        info.then(res => res.json()).then(data => {
-            setServerList(serverList.filter(server => server.author == true).concat(Object.values(data).filter(server => !(myServers.includes(server.id)))))
-            setCanRequest(false)
-            setTimeout(() => {
-                setCanRequest(true)
-            }, 10000) //another security risk ik
-        })
-        }
+        // })
+        // info.then(res => res.json()).then(data => {
+        //     setServerList(serverList.filter(server => server.author == true).concat(Object.values(data).filter(server => !(myServers.includes(server.id)))))
+        //     setCanRequest(false)
+        //     setTimeout(() => {
+        //         setCanRequest(true)
+        //     }, 10000) //another security risk ik
+        // })
+        // }
         
         return []
     }
@@ -58,31 +55,12 @@ function Menu(props) {
     let [serverList, setServerList] = useState([])
     getLobbiesFromServer()
 
+    
+    let sendLobbyToServer = (name, desc) => {
 
-    let sendLobbyToServer = (name, desc, author) => {
-        console.log("sending lobby to server..")
         let id = generateServerId()
-        setServerList(serverList.concat([{name:name, desc:desc, author:author, id:id}]))
-        let info = fetch("http://localhost:5000", {
-            method: 'POST',
-            mode: 'cors', // this cannot be 'no-cors'
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: name,
-                desc: desc,
-                request: "createServer",
-                id: id, // yes i know this is a terrible idea to allow the client to set the id, because it allows anyone who knows what they r doing to delete servers, but in my defense, it'll be funny
-            
-                host: playerName
-            }
-            )
-
-        })
-        info.then(res => res.json())
-        .then(res => davidlog(res))
+        setServerList(serverList.concat([{name:name, desc:desc, author:playerName, id:id}]))
+        props.socket.emit("createLobby", JSON.stringify({name:name, desc:desc, author:playerName, id:id}))
     }
 
     let createLobby = () => {
@@ -95,19 +73,50 @@ function Menu(props) {
         
         
     }
-    let addServer = (name, desc, author) => {
-      
+    const kickPlayer = () => {
+        props.socket.emit("kickPlayer")
+    }
+    props.socket.on("getServerListInit", (data) => {
+        setServerList(JSON.parse(data))
+    })
+    props.socket.on("kicked", (data) => {
+        alert("wow you got kicked. you should become more likeable. honestly a skill issue tbh be honest.")
+
+    })
+    props.socket.on("lobbyCreationEvent", (message) => {
+        let data = JSON.parse(message)
+        setServerList(serverList.concat([data]))
+    })
+    props.socket.on("lobbyDeletionEvent", (message) => {
+	
+        let data = JSON.parse(message)
+        setServerList(serverList.filter(server => server.id != data.id))
+    })
+    props.socket.on("opponentJoined", (message) => {
+        let data = JSON.parse(message)
         
-        sendLobbyToServer(name, desc, author)
-        console.log(serverList)
+        setOpponent(data.author)
+    })
+    let addServer = (name, desc) => {
+              
+        sendLobbyToServer(name, desc)
+        
+    }
+    let joinServer = (server) => {
+        setLobbyVis(true)
+        setServerClicked(true)
+        setHost(server)
+
     }
     let deleteLobby = () => {
-        console.log("äsdm")
-        setServerList(serverList.filter(server => server.author != true))
+        const myLobby = serverList.filter(server => server.author == playerName)
+        props.socket.emit("deleteLobby", JSON.stringify({id:myLobby[0].id}))
+        setServerList(serverList.filter(server => server.author != playerName))
     }
     if (visible != true) {
         return null
     }
+   
     if (serverClicked == false) {
     return(
         
@@ -115,10 +124,10 @@ function Menu(props) {
             <input id="player-name" placeholder="Enter your username...or else" onChange={(e) => setPlayerName(e.target.value)}></input>
             <h3 id="menu_title">professioasal lobby fidner</h3>
             <div id="servers-display">
-                {serverList.map(server => <Server key={nanoid()} name={server.name} startGame={props.startGame} id={server.id} setTiles={props.setTiles} desc={server.desc} author={server.author} />)}
+                {serverList.map(server => <Server key={nanoid()} name={server.name} joinServer={joinServer} socket={props.socket} startGame={props.startGame} id={server.id} setTiles={props.setTiles} playerName={playerName} desc={server.desc} author={server.author} />)}
             </div>
             <button onClick={createLobby} id="create-server">Create Lobby</button>
-            <CreateLobby visible={lobbyVis} addServer={addServer} deleteLobby={deleteLobby}/>
+            <CreateLobby visible={lobbyVis} opponent={opponent} kickPlayer={kickPlayer} host={host} addServer={addServer} deleteLobby={deleteLobby}/>
         </div>
     )
     } else if (serverClicked == true) {
@@ -126,10 +135,10 @@ function Menu(props) {
         <div id="menu">
             <h3 id="menu_title">professioasal lobby fidner</h3>
             <div id="servers-display">
-                {serverList.map(server => <Server key={nanoid()} name={server.name} desc={server.desc} author={server.author} />)}
+                {serverList.map(server => <Server key={nanoid()} name={server.name} joinServer={joinServer} socket={props.socket} startGame={props.startGame} id={server.id} setTiles={props.setTiles} playerName={playerName} desc={server.desc} author={server.author} />)}
             </div>
           
-            <CreateLobby visible={lobbyVis} addServer={addServer} deleteLobby={deleteLobby}/>
+            <CreateLobby visible={lobbyVis} opponent={opponent} kickPlayer={kickPlayer} host={host} addServer={addServer} deleteLobby={deleteLobby}/>
         </div>
     )
     }

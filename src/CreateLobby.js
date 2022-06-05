@@ -4,6 +4,9 @@ function CreateLobby(props) {
     let [lobbyName, setLobbyName] = useState("")
     let [lobbyDesc, setLobbyDesc] = useState("")
     let [lobbyMade, setLobbyMade] = useState(0)
+    let opponent = props.opponent
+
+
 
     if (props.visible == false) {
         return null
@@ -17,7 +20,7 @@ function CreateLobby(props) {
     const doSubmit = (e) => {
         e.preventDefault()
 
-        props.addServer(lobbyName, lobbyDesc, true);
+        props.addServer(lobbyName, lobbyDesc);
         setLobbyName("")
         setLobbyDesc("")
         setLobbyMade(1)
@@ -26,6 +29,19 @@ function CreateLobby(props) {
     const deleteLobby = () => {
         props.deleteLobby()
         setLobbyMade(0)
+    }
+    const startServer = () => {
+        props.startServer()
+    }
+    if (props.host != (undefined || null || "")) {
+
+        return (
+            <div id="create-lobby-div">
+                <h3 id="create-lobby-title">Joined Game</h3>
+                <p>You have joined {props.host}'s lobby! The game will start when he decides so.</p>
+    
+            </div>
+        )
     }
     if (lobbyMade == 0) {
         return (
@@ -42,12 +58,25 @@ function CreateLobby(props) {
             </div>
         )
     } else if (lobbyMade == 1) {
-        return (
-            <div id="create-lobby-div">
-                <h3 id="create-lobby-title">Lobby Created!</h3>
-                <button onClick={deleteLobby} id="delete-server">Delete Lobby</button>
-            </div>
-        )
+       
+        if (opponent != (null || undefined || "")) {
+            return (
+                <div id="create-lobby-div">
+                    <h3 id="create-lobby-title">A challenger approaches!</h3>
+                    <h2>Opponent: {opponent}</h2>
+                    <button onClick={deleteLobby} id="delete-server">Delete Lobby</button>
+                    <button onClick={props.kickPlayer} id="delete-server">Kick Player</button>
+                    <button onClick={props.startServer} id="start-server">Start Game</button>
+                </div>
+            )
+        } else {
+            return (
+                <div id="create-lobby-div">
+                    <h3 id="create-lobby-title">Lobby Created!</h3>
+                    <button onClick={deleteLobby} id="delete-server">Delete Lobby</button>
+                </div>
+            )
+        }
     }
     
     

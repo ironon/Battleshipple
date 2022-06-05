@@ -6,60 +6,30 @@ import { useState } from 'react';
 function Server(props) {
     let [opponent, setOpponent] = useState("")
     let name = props.name != (null || "") ? props.name : "super radical lobby"
-    let author = props.author != (null || "" || true) ? props.author : "you!!!"
+    let author = props.author != (null || "" || true) ? props.author : "ERROR"
     let desc = props.desc != (null || "") ? props.desc : "this nerd forgot to put a description :("
+    let playerName = props.playerName
     let id = props.id
-    console.log(id)
+
     let sendingAttackHornets = () => {
         alert("sending attack hornets...death awaits the enemy")
     }
     let joinServer = () => {
-        setOpponent("you!!")
-        let joinServerRequest = fetch("http://localhost:5000", {
-            method: 'POST',
-            mode: 'cors', // this cannot be 'no-cors'
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                request: "joinServer",
-                id: props.id,
-            })
-        })
-        joinServerRequest.then(res => res.json()).then(data => {
-            console.log(data)
-            props.startGame(data)
-        
-            props.setTiles(data.board)
-        })
+        if (playerName == "youCantSetYourNameAsThis>:)") {
+            alert("set ur player name bozo")
+            return
 
-        let waitForOpponent = fetch("http://localhost:5000", {
-            method: 'POST',
-            mode: 'cors', // this cannot be 'no-cors'
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                request: "waitForOpponent"
-    
-            })
-        })
-        waitForOpponent.then(res => res.json()).then(data => {
-            console.log(data)
-            setOpponent(data.opponent)
-        })
-        
-        
+        }
+        props.socket.emit("joinLobby", JSON.stringify({id:id, author:playerName}))
+        props.joinServer(name)
         
     }
-    if (props.author == true) {
+    if (author == playerName) {
         return (
             <div className="server" id={`server-${nanoid()}`}>
-                <p id="server-name">{name}</p><p id="small-text"> hosted by you!!!</p>
+                <p id="server-name">{name}</p><p id="small-text"> you made this lobby!</p>
                 <p id="server-desc">{desc}</p>
-                <p id="opponent">Opponent: {opponent}</p>
+             
             </div>
         )
     }
